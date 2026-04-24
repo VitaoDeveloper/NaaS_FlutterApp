@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 void main() {
   runApp(const MyApp());
 }
@@ -11,6 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'NaaS API Calling App',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
@@ -29,38 +31,48 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  String msg = "Aperte o botão para uma desculpa aleatória";
+  
+  Future<void> naasCall() async {
+    final url = Uri.parse('https://no-as-a-service-portuguese-ts.vercel.app/no');
+    
+    final res = await http.get(url);
+  
+    if (res.statusCode == 200) {
+      setState(() {
+        msg = jsonDecode(res.body)["reason"];
+      });
+    } else {
+      throw Exception('Erro ao chamar API');
+    }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Text("App de Chamada ao NaaS"),
       ),
-      body: Center(
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20), 
         child: Column(
-          mainAxisAlignment: .center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('You have pushed the button this many times:'),
             Text(
-              '$_counter',
+              msg,
+              textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () => naasCall(), 
+              child: Text("Gerar desculpa")
+            )
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      ) 
     );
   }
 }
