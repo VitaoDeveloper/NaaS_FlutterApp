@@ -38,12 +38,20 @@ class _MyHomePageState extends State<MyHomePage> {
     
     final res = await http.get(url);
   
-    if (res.statusCode == 200) {
+    try {
+      if (res.statusCode == 200) {
+        setState(() {
+          msg = jsonDecode(res.body)["reason"];
+        });
+      } else {
+        setState(() {
+          msg = "Erro HTTP: ${res.statusCode}";
+        });
+      }
+    } catch (error) {
       setState(() {
-        msg = jsonDecode(res.body)["reason"];
+        msg = "Erro inesperado: $error";
       });
-    } else {
-      throw Exception('Erro ao chamar API');
     }
   }
   
