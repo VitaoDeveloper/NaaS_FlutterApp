@@ -67,6 +67,9 @@ NaaS_FlutterApp/
    flutter run -d windows    # Windows
    flutter run -d linux      # Linux
    ```
+   
+Or you can just download the .apk file in https://github.com/VitaoDeveloper/NaaS_FlutterApp/releases
+
 
 > The app requires an internet connection, since it queries the external API `no-as-a-service-portuguese-ts.vercel.app` in real time.
 
